@@ -11,3 +11,19 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.main {
+  display: flex;
+  justify-content: space-around;
+}
+
+.katas {
+  height: 70vh;
+  width: 68%;
+  border: 1px solid black;
+}
+
+.users {
+  height: 70vh;
+  width: 30%;
+  border: 1px solid black;
+}
