@@ -20,6 +20,20 @@
     height: 100%;
 }
 
-.kata {
-    border: white 1px solid;
+.kata, .kata-list, .katalist1, .katalist2 {
+    border: 1px solid white;
+    height: 100%;
+    
+}
+
+.kata-list {
+    display: flex;
+}
+
+.kata-list1 {
+    width: 70%;
+}
+
+.kata-list2 {
+    width: 30%;
 }

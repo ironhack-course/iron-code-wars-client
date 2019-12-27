@@ -62,9 +62,16 @@ export default class Main extends Component {
                             <input type="number" onChange={this.onChangeHandler} name="kataTime" className="add-kata"/>
                             <button type="submit">+</button>
                         </form>
-                        <button>^</button>
+                        <span>^</span>
                     </div>
-                    {this.state.katas.map(kata => <Kata key={kata.id} {...kata}/> )}
+                    <div className="kata-list">
+                        <div className="kata-list1">
+                            {this.state.katas.map(kata => <Kata key={kata.id} {...kata}/> )}
+                        </div>
+                        <div className="kata-list2">
+        {this.state.katas.map(kata => <span key={kata.id}>{kata.name} - {kata.time} minutes</span>)}
+                        </div>
+                    </div>
                 </div>
                 <div className="users">
 
