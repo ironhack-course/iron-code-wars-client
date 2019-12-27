@@ -2,13 +2,17 @@ import React, { Component } from 'react';
 
 import Kata from '../components/Kata';
 import axios from 'axios';
+import './Main.css';
 
 export default class Main extends Component {
     state = {
         users: [],
         katas: [],
-        time: 0,
-        kataName: ''
+        currentKata: '',
+        currentTimer: 0,
+        kataName: '',
+        kataTime: 0,
+        errorMessage: ''
     }
 
     onChangeHandler = e => {
@@ -19,15 +23,29 @@ export default class Main extends Component {
 
     getKata = async ( e ) => {
         e.preventDefault();
+        if(this.state.kataName && this.state.kataTime > 0)
         try {
-            const kata = await axios.get(`http://localhost:3000/${this.state.kataName}`);//
-            // "proxy": "http://localhost:3000",
-            console.log(kata.data)
-            let katas = this.state.katas.slice();
-            katas.push(kata.data);
-            this.setState({
-                katas: katas
-            })
+            const kata = await axios.get(`http://localhost:3000/${this.state.kataName}`);
+            if(kata.data.name === 'Error') {
+                console.log(kata.data);
+                this.setState({
+                    errorMessage: kata.data
+                });
+            }
+            else {
+                let katas = this.state.katas.slice();
+                if(!katas.map(x => x.id).includes(kata.data.id)) {
+                    katas.push({...kata.data, time: Number(this.state.kataTime)});
+                    this.setState({ 
+                        katas: katas
+                    })
+                }
+                else {
+                    this.setState({
+                        errorMessage: {message: 'Kata already added, try another one'}
+                    });
+                }
+            }
         }
         catch(err) {console.log(err)}
     }
@@ -36,10 +54,17 @@ export default class Main extends Component {
         return (
             <div className="main">
                 <div className="katas">
-                    <form onSubmit={this.getKata}>
-                        <input type="text" onChange={this.onChangeHandler} name="kataName" className="add-kata"/>
-                    </form>
-                    <Kata />
+                    <div className='controlls'>
+                        <form onSubmit={this.getKata}>
+                            <label htmlFor="kataName">Name of the Kata:</label>
+                            <input type="text" onChange={this.onChangeHandler} name="kataName" className="add-kata"/>
+                            <label htmlFor="kataTime">Time for Kata(in minutes):</label>
+                            <input type="number" onChange={this.onChangeHandler} name="kataTime" className="add-kata"/>
+                            <button type="submit">+</button>
+                        </form>
+                        <button>^</button>
+                    </div>
+                    {this.state.katas.map(kata => <Kata key={kata.id} {...kata}/> )}
                 </div>
                 <div className="users">
 

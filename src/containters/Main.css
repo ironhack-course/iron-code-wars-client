@@ -1,0 +1,25 @@
+.main {
+    display: flex;
+    justify-content: space-around;
+}
+
+.katas {
+    height: 85vh;
+    width: 68%;
+    border: 1px solid black;
+    background-color: black;
+    color: white;
+    overflow: scroll;
+}
+
+.controlls {
+    display: flex;
+}
+
+.katas button {
+    height: 100%;
+}
+
+.kata {
+    border: white 1px solid;
+}
