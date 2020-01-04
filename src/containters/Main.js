@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
 import Kata from '../components/Kata';
 import axios from 'axios';
 import './Main.css';
 
-export default class Main extends Component {
+class Main extends Component {
     state = {
         users: [],
         katas: [],
@@ -12,7 +12,8 @@ export default class Main extends Component {
         currentTimer: 0,
         kataName: '',
         kataTime: 0,
-        errorMessage: ''
+        errorMessage: '',
+        displayedKata: null
     }
 
     onChangeHandler = e => {
@@ -37,7 +38,8 @@ export default class Main extends Component {
                 if(!katas.map(x => x.id).includes(kata.data.id)) {
                     katas.push({...kata.data, time: Number(this.state.kataTime)});
                     this.setState({ 
-                        katas: katas
+                        katas: katas,
+                        displayedKata: katas.length - 1
                     })
                 }
                 else {
@@ -51,10 +53,13 @@ export default class Main extends Component {
     }
 
     render() {
+        let kata = this.state.displayedKata != null ? this.state.katas[this.state.displayedKata] : null;
+        console.log(kata, this.state.displayedKata, this.state.katas[this.state.displayedKata]);
         return (
+            //this is going to be it's own containter
             <div className="main">
                 <div className="katas">
-                    <div className='controlls'>
+                    <div className='kata-add'>
                         <form onSubmit={this.getKata}>
                             <label htmlFor="kataName">Name of the Kata:</label>
                             <input type="text" onChange={this.onChangeHandler} name="kataName" className="add-kata"/>
@@ -66,13 +71,25 @@ export default class Main extends Component {
                     </div>
                     <div className="kata-list">
                         <div className="kata-list1">
-                            {this.state.katas.map(kata => <Kata key={kata.id} {...kata}/> )}
+                            {kata && <Kata key={kata.id} {...kata}/>}
+                            
                         </div>
                         <div className="kata-list2">
-        {this.state.katas.map(kata => <span key={kata.id}>{kata.name} - {kata.time} minutes</span>)}
+                            {this.state.katas.map(kata => <div key={kata.id}><span >{kata.name} - {kata.time} minutes</span></div>)}
+                            
+                        </div>
+                    </div>
+                    <div className='kata-start'>
+                        <div className="scroll-button">
+                            <button> Prev Kata </button>
+                            <button> Next Kata </button>
+                        </div>
+                        <div className="start-button">
+                            <button>Start</button>
                         </div>
                     </div>
                 </div>
+                {/* this is going to be another component */}
                 <div className="users">
 
                 </div>
@@ -80,3 +97,16 @@ export default class Main extends Component {
         )
     }
 }
+const mapStateToProps = state => {
+    return {
+        //state goes here
+    }
+}
+
+const mapDispathToProps = dispatch => {
+    return {
+        //actions go here
+    }
+}
+
+export default connect(mapStateToProps, mapDispathToProps)(Main);
