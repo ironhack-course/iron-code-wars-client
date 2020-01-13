@@ -2,6 +2,8 @@ import React from 'react';
 
 export default function Kata(props) {
     let color = props.rank.color === 'white' || props.rank.color === 'yellow' ? 'black' : 'white';
+    let description = props.description.split('</h1>');
+    console.log(description);
     return (
         <div className='kata'>
             <a href={props.url} target="_blank" rel="noopener noreferrer">
@@ -9,8 +11,9 @@ export default function Kata(props) {
                     {props.name} - {props.rank.name} - {props.time}
                 </span>
             </a>
+            {/* {description[0]} */}
             <p style={{whiteSpace: 'pre-wrap'}}>
-                {props.description}
+                {description[1]}
             </p>
         </div>
     )

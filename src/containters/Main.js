@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Kata from '../components/Kata';
+import * as actionTypes from '../store/actions';
 import axios from 'axios';
 import './Main.css';
 
 class Main extends Component {
+    // ToDos
+    // do social login with GitHub *required
+    // users able to join in room/challenge
     state = {
-        users: [],
-        katas: [],
-        currentKata: '',
-        currentTimer: 0,
         kataName: '',
-        kataTime: 0,
-        errorMessage: '',
-        displayedKata: null
+        kataTime: 0
     }
 
     onChangeHandler = e => {
@@ -24,37 +22,31 @@ class Main extends Component {
 
     getKata = async ( e ) => {
         e.preventDefault();
-        if(this.state.kataName && this.state.kataTime > 0)
+
+        //grab the time to complete Kata
+        const kataTime = this.state.kataTime === 0 ? 25 : Number(this.state.kataTime);
+
+        if(this.state.kataName)
         try {
-            const kata = await axios.get(`http://localhost:3000/${this.state.kataName}`);
+            const kata = await axios.get(`/${this.state.kataName}`);
             if(kata.data.name === 'Error') {
                 console.log(kata.data);
-                this.setState({
-                    errorMessage: kata.data
-                });
+                this.props.errorMessage(kata.data);
             }
             else {
-                let katas = this.state.katas.slice();
-                if(!katas.map(x => x.id).includes(kata.data.id)) {
-                    katas.push({...kata.data, time: Number(this.state.kataTime)});
-                    this.setState({ 
-                        katas: katas,
-                        displayedKata: katas.length - 1
-                    })
-                }
-                else {
-                    this.setState({
-                        errorMessage: {message: 'Kata already added, try another one'}
-                    });
-                }
+                this.props.onGetKata({...kata.data, time: kataTime});
             }
         }
-        catch(err) {console.log(err)}
+        catch(err) {
+            
+        }
     }
 
     render() {
-        let kata = this.state.displayedKata != null ? this.state.katas[this.state.displayedKata] : null;
-        console.log(kata, this.state.displayedKata, this.state.katas[this.state.displayedKata]);
+        let kata = this.props.displayedKata != null ? this.props.katas[this.props.displayedKata] : null;
+        console.log(kata, this.props.displayedKata, this.props.katas[this.props.displayedKata]);
+
+        // we should be checking if there is an error in global state and displaying it (idealy as hoc/overlay)
         return (
             //this is going to be it's own containter
             <div className="main">
@@ -75,7 +67,7 @@ class Main extends Component {
                             
                         </div>
                         <div className="kata-list2">
-                            {this.state.katas.map(kata => <div key={kata.id}><span >{kata.name} - {kata.time} minutes</span></div>)}
+                            {this.props.katas.map(kata => <div key={kata.id}><span >{kata.name} - {kata.time} minutes</span></div>)}
                             
                         </div>
                     </div>
@@ -97,15 +89,24 @@ class Main extends Component {
         )
     }
 }
+
 const mapStateToProps = state => {
     return {
-        //state goes here
+        //state passed as props
+        users: state.users,
+        katas: state.katas,
+        currentKata: state.currentKata,
+        currentTimer:state.currentTimer,
+        errorMessage: state.errorMessage,
+        displayedKata: state.displayedKata
     }
 }
 
 const mapDispathToProps = dispatch => {
     return {
-        //actions go here
+        //actions to dispatch
+        onGetKata: (kata) => dispatch({ type: actionTypes.onGetKata, kata: kata }),
+        errorMessage: (errorMessage) => dispatch({ type: actionTypes.errorMessage, errorMessage })
     }
 }
 

@@ -8,5 +8,5 @@ import reducer from './store/reducer';
 
 const store = createStore(reducer);
 
-ReactDOM.render(<Provider strore={store}><App /></Provider>, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
 

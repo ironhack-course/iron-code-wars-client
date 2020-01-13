@@ -6,8 +6,6 @@ import Main from './containters/Main';
 function App() {
   return (
     <div className="App">
-
-      <h1>Here goes</h1>
       <Main />
     </div>
   );
