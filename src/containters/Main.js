@@ -1,25 +1,33 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Kata from '../components/Kata';
+
+
 import * as actionTypes from '../store/actions';
 import axios from 'axios';
+
+import Kata from '../components/Kata';
+import Controls from '../components/Controls';
 import './Main.css';
 
 class Main extends Component {
     // ToDos
     // do social login with GitHub *required
     // users able to join in room/challenge
+
+    //local state used for adding new kata and time for it
     state = {
         kataName: '',
         kataTime: 0
     }
 
+    //on change for kata/timer
     onChangeHandler = e => {
         this.setState({
             [e.target.name]: e.target.value
         });
     }   
 
+    //Grab a kata from API can be done either via ID or Kata-name
     getKata = async ( e ) => {
         e.preventDefault();
 
@@ -34,6 +42,7 @@ class Main extends Component {
                 this.props.errorMessage(kata.data);
             }
             else {
+                //store Kata in store
                 this.props.onGetKata({...kata.data, time: kataTime});
             }
         }
@@ -43,34 +52,27 @@ class Main extends Component {
     }
 
     render() {
-        let kata = this.props.displayedKata != null ? this.props.katas[this.props.displayedKata] : null;
-        console.log(kata, this.props.displayedKata, this.props.katas[this.props.displayedKata]);
+        //kata to be shown
+        // console.log(kata, this.props.displayedKata, this.props.katas[this.props.displayedKata]);
+        let displayedKata = this.props.displayedKata != null ? this.props.katas[this.props.displayedKata] : null;
 
         // we should be checking if there is an error in global state and displaying it (idealy as hoc/overlay)
         return (
-            //this is going to be it's own containter
             <div className="main">
                 <div className="katas">
-                    <div className='kata-add'>
-                        <form onSubmit={this.getKata}>
-                            <label htmlFor="kataName">Name of the Kata:</label>
-                            <input type="text" onChange={this.onChangeHandler} name="kataName" className="add-kata"/>
-                            <label htmlFor="kataTime">Time for Kata(in minutes):</label>
-                            <input type="number" onChange={this.onChangeHandler} name="kataTime" className="add-kata"/>
-                            <button type="submit">+</button>
-                        </form>
-                        <span>^</span>
-                    </div>
+                    <Controls getKata={this.getKata} onChangeHandler={this.onChangeHandler} />
                     <div className="kata-list">
                         <div className="kata-list1">
-                            {kata && <Kata key={kata.id} {...kata}/>}
+                            {displayedKata && <Kata key={displayedKata.id} {...displayedKata}/>}
                             
                         </div>
                         <div className="kata-list2">
+                            {/* Here we need router to switch over katas */}
                             {this.props.katas.map(kata => <div key={kata.id}><span >{kata.name} - {kata.time} minutes</span></div>)}
                             
                         </div>
                     </div>
+                    {/* Here we will create own container */}
                     <div className='kata-start'>
                         <div className="scroll-button">
                             <button> Prev Kata </button>
