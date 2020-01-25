@@ -55,7 +55,7 @@ class Main extends Component {
         //kata to be shown
         // console.log(kata, this.props.displayedKata, this.props.katas[this.props.displayedKata]);
         let displayedKata = this.props.displayedKata != null ? this.props.katas[this.props.displayedKata] : null;
-
+        console.log(displayedKata)
         // we should be checking if there is an error in global state and displaying it (idealy as hoc/overlay)
         return (
             <div className="main">
@@ -75,8 +75,8 @@ class Main extends Component {
                     {/* Here we will create own container */}
                     <div className='kata-start'>
                         <div className="scroll-button">
-                            <button> Prev Kata </button>
-                            <button> Next Kata </button>
+                            <button disabled={this.props.displayedKata === 0} onClick={()=>this.props.changeDisplayedKata(-1)}> Prev Kata </button>
+                            <button disabled={this.props.displayedKata === this.props.katas.length} onClick={()=>this.props.changeDisplayedKata(1)}> Next Kata </button>
                         </div>
                         <div className="start-button">
                             <button>Start</button>
@@ -108,7 +108,8 @@ const mapDispathToProps = dispatch => {
     return {
         //actions to dispatch
         onGetKata: (kata) => dispatch({ type: actionTypes.onGetKata, kata: kata }),
-        errorMessage: (errorMessage) => dispatch({ type: actionTypes.errorMessage, errorMessage })
+        errorMessage: (errorMessage) => dispatch({ type: actionTypes.errorMessage, errorMessage }),
+        changeDisplayedKata: (change) => dispatch({ type: actionTypes.changeDisplayedKata, change }),
     }
 }
 

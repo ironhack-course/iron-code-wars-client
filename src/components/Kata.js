@@ -13,7 +13,7 @@ export default function Kata(props) {
             </a>
             {/* {description[0]} */}
             <p style={{whiteSpace: 'pre-wrap'}}>
-                {description[1]}
+                {description[1] ? description[1] : description[0]}
             </p>
         </div>
     )
